@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <link rel="icon" type="image/png" href="notebooks photos/favicon_logo_y_1773081448158.png">
+    <link rel="stylesheet" href="mwsstyle.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+    <script>
+        // سكريبت لمنع اللاج (FOUC) عند البحث
+        // يقوم بإخفاء المنتجات مؤقتاً عبر CSS قبل أن يتم تحميل الصفحة حتى لا تظهر المنتجات كلها لثانية
+        if (window.location.search.includes('search=')) {
+            document.write('<style id="search-hide-style">.product, .pro { display: none !important; }</style>');
+        }
+    </script>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">YIMYIM</a>
+            <div class="sidebar-wrapper" id="sidebarWrapper">
+                <div class="close-sidebar" id="closeBtnSidebar"><i class="fas fa-times"></i></div>
+                <div class="nav-links">
+                    <a href="index.html#home">Home</a>
+                    <a href="shop.html">Shop</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#works">Works</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <div class="icons" style="position: relative;">
+                    <i class="fas fa-search" id="searchBtn" style="cursor: pointer;"></i>
+                    <div id="searchPopup" class="search-popup">
+                        <input type="text" id="searchInput" placeholder="ابحث هنا...">
+                        <button onclick="performSearch()">بحث</button>
+                    </div>
+                    <i class="fas fa-heart" id="favoriteBtn" style="cursor: pointer;"></i>
+                    <i class="fas fa-user" id="userBtn" style="cursor: pointer;"></i>
+                    <i class="fas fa-shopping-cart" id="cartBtn" style="cursor: pointer;"></i>
+                </div>
+            </div>
+
+            <div class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="header">
+        <h2>OUR PRODUCTS</h2>
+    </div>
+    <div class="container">
+        <div class="product">
+            <img src="notebooks photos/BEYOND STARS.png" alt="logo">
+            <h3>BEYOND STARS</h3>
+            <h4> EGP 60</h4>
+            <input type="number" value="1" min="1">
+            <a href="checkout.html" title="ORDER">BUY NOW</a>
+            <a href="cart.html">ADD TO CART</a>
+
+        </div>
+        <div class="product">
+            <img src="notebooks photos/Create.png" alt="">
+            <h3>Create</h3>
+            <h4> EGP 60</h4>
+            <input type="number" value="1" min="1">
+            <a href="checkout.html" title="ORDER">BUY NOW</a>
+            <a href="cart.html">ADD TO CART</a>
+        </div>
+        <div class="product">
+            <img src="notebooks photos/Daily Diary.png" alt="">
+            <h3>Daily Diary</h3>
+            <h4> EGP 60</h4>
+            <input type="number" value="1" min="1">
+            <a href="checkout.html" title="ORDER">BUY NOW</a>
+            <a href="cart.html">ADD TO CART</a>
+        </div>
+        <div class="product">
+            <img src="notebooks photos/JUST FOCUS.png" alt="">
+            <h3>JUST FOCUS</h3>
+            <h4> EGP 60</h4>
+            <input type="number" value="1" min="1">
+            <a href="checkout.html" title="ORDER">BUY NOW</a>
+            <a href="cart.html">ADD TO CART</a>
+        </div>
+        <div class="product">
+            <img src="notebooks photos/MY THOUGHTS.png" alt="">
+            <h3>MY THOUGHTS</h3>
+            <h4> EGP 60</h4>
+            <input type="number" value="1" min="1">
+            <a href="checkout.html" title="ORDER">BUY NOW</a>
+            <a href="cart.html">ADD TO CART</a>
+        </div>
+        <div class="product">
+            <img src="notebooks photos/Pretty Little Notes.png" alt="">
+            <h3>Pretty Little Notes </h3>
+            <h4> EGP 60</h4>
+            <input type="number" value="1" min="1">
+            <a href="checkout.html" title="ORDER">BUY NOW</a>
+            <a href="cart.html">ADD TO CART</a>
+        </div>
+        <div class="product">
+            <img src="notebooks photos/THOUGHTS OR WAVES.png" alt="">
+            <h3>THOUGHTS OR WAVES</h3>
+            <h4> EGP 60</h4>
+            <input type="number" value="1" min="1">
+            <a href="checkout.html" title="ORDER">BUY NOW</a>
+            <a href="cart.html">ADD TO CART</a>
+        </div>
+        <div class="product">
+            <img src="notebooks photos/Visça Barca.png" alt="">
+            <h3>Visça Barca</h3>
+            <h4> EGP 60</h4>
+            <input type="number" value="1" min="1">
+            <a href="checkout.html" title="ORDER">BUY NOW</a>
+            <a href="cart.html">ADD TO CART</a>
+        </div>
+        <div class="product">
+            <img src="notebooks photos/Where ideas begin.png" alt="">
+            <h3>Where ideas begin</h3>
+            <h4> EGP 60</h4>
+            <input type="number" value="1" min="1">
+            <a href="checkout.html" title="ORDER">BUY NOW</a>
+            <a href="cart.html">ADD TO CART</a>
+        </div>
+        <div class="product">
+            <img src="notebooks photos/Dreamy Wings.png" alt="">
+            <h3>Dreamy Wings</h3>
+            <h4> EGP 60</h4>
+            <input type="number" value="1" min="1">
+            <a href="checkout.html" title="ORDER">BUY NOW</a>
+            <a href="cart.html">ADD TO CART</a>
+        </div>
+
+    </div>
+
+    <style>
+        .header {
+            background-color: #ffffff;
+            ;
+        }
+
+        .header h2 {
+            color: #FFB6C1;
+        }
+    </style>
+
+    <!-- GSAP and scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+    <script src="script2.js"></script>
+</body>
+
+</html>

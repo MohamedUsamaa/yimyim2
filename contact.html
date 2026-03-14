@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no">
+  <title>Contact</title>
+  <link rel="stylesheet" href="mwsstyle.css">
+  <link rel="icon" type="image/png" href="notebooks photos/favicon_logo_y_1773081448158.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-dB+r+BdDOl...مهم جدًا..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f9f6f1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .brand-heading {
+      text-align: center;
+      font-size: 90px;
+      font-weight: bold;
+      color: #FFB6C1;
+      margin-bottom: 60px;
+      margin-top: 20px;
+      margin-right: 5px;
+      letter-spacing: 5px;
+      padding-top: 25px;
+    }
+
+    .container {
+      display: flex;
+      max-width: 1000px;
+      width: 100%;
+      background: #f9f6f1;
+      border: 1px solid #000000;
+      box-shadow: 0 4px 20px #FFB6C1;
+      border-radius: 20px;
+      overflow: hidden;
+      height: auto;
+    }
+
+    .left {
+      flex: 1;
+      background-color: #f9f6f1;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .left h1 {
+      font-size: 40px;
+      margin-bottom: 20px;
+      line-height: 1.2;
+      color: #ff8f9f;
+    }
+
+    .left h1 span {
+      display: block;
+    }
+
+    .left p {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #ff8f9f;
+    }
+
+    .right {
+      flex: 1;
+      color: #f9f6f1;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    input,
+    textarea {
+      padding: 12px 15px;
+      border: 1px solid #000000;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      /* إلغاء الإطار الافتراضي */
+      border-color: #ff8f9f;
+      /* الإطار سيكون باللون الذي اخترتيه */
+    }
+
+    textarea {
+      resize: vertical;
+      height: 100px;
+    }
+
+    button {
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #000000;
+      color: #000000;
+      background-color: transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #FFB6C1;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        height: auto;
+        margin-bottom: 30px;
+
+      }
+
+      .left,
+      .right {
+        width: 100%;
+        text-align: center;
+        align-items: center;
+      }
+
+      .brand-heading {
+        margin-top: 50px;
+        /* أو أي قيمة تناسبك */
+        padding-top: 20px;
+      }
+
+      .left h1 {
+        font-size: 32px;
+      }
+
+      .brand-heading {
+        margin-top: 70PX;
+
+      }
+
+      button:hover {
+        background-color: #FFB6C1;
+        color: white;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        flex-direction: column;
+        height: auto;
+        margin-bottom: 30px;
+
+      }
+
+      .left,
+      .right {
+        width: 100%;
+        text-align: center;
+        align-items: center;
+      }
+
+      .brand-heading {
+        margin-top: 50px;
+        /* أو أي قيمة تناسبك */
+        padding-top: 20px;
+      }
+
+      .left h1 {
+        font-size: 32px;
+      }
+
+      .brand-heading {
+        margin-top: 70PX;
+
+      }
+
+      button:hover {
+        background-color: #FFB6C1;
+        color: white;
+      }
+    }
+
+    .social-icons-contact {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    .social-icon-contact {
+      display: flex;
+      width: 45px;
+      height: 45px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: #ffffff;
+      color: #FFB6C1;
+      font-size: 1.5rem;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .social-icon-contact:hover {
+      transform: translateY(-5px) scale(1.1);
+      color: #fff;
+    }
+
+    .social-icon-contact.facebook:hover {
+      background-color: #1877F2;
+      box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
+    }
+
+    .social-icon-contact.whatsapp:hover {
+      background-color: #25D366;
+      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+    }
+
+    .social-icon-contact.instagram:hover {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      box-shadow: 0 8px 20px rgba(220, 39, 67, 0.3);
+    }
+
+    .social-icon-contact.twitter:hover {
+      background-color: #1DA1F2;
+      box-shadow: 0 8px 20px rgba(29, 161, 242, 0.3);
+    }
+  </style>
+
+
+</head>
+
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">YIMYIM</a>
+      <div class="sidebar-wrapper" id="sidebarWrapper">
+        <div class="close-sidebar" id="closeBtnSidebar"><i class="fas fa-times"></i></div>
+        <div class="nav-links">
+          <a href="index.html#home">Home</a>
+          <a href="shop.html">Shop</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#works">Works</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="icons" style="position: relative;">
+          <i class="fas fa-search" id="searchBtn" style="cursor: pointer;"></i>
+          <div id="searchPopup" class="search-popup">
+            <input type="text" id="searchInput" placeholder="ابحث هنا...">
+            <button onclick="performSearch()">بحث</button>
+          </div>
+          <i class="fas fa-heart" id="favoriteBtn" style="cursor: pointer;"></i>
+          <i class="fas fa-user" id="userBtn" style="cursor: pointer;"></i>
+          <i class="fas fa-shopping-cart" id="cartBtn" style="cursor: pointer;"></i>
+        </div>
+      </div>
+
+      <div class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <h1 class="brand-heading">YIMYIM</h1> <!-- اسم البراند هنا -->
+
+  <div class="container">
+    <div class="left">
+      <h1>
+        <span>LET'S GET IN TOUCH</span>
+      </h1>
+      <p>YIMYIM@gmail.com</p>
+
+      <div class="social-icons-contact">
+        <a href="https://wa.me/201223610715" class="social-icon-contact whatsapp" target="_blank" title="WhatsApp"><i
+            class="fab fa-whatsapp"></i></a>
+        <a href="https://www.instagram.com/yimyim.notes?igsh=bXljbnY4ZGJiNXV4" class="social-icon-contact instagram"
+          target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon-contact facebook" target="_blank" title="Facebook"><i
+            class="fab fa-facebook"></i></a>
+      </div>
+    </div>
+
+    <div class="right">
+      <form id="contactForm" onsubmit="sendToWhatsApp(event)">
+        <input type="text" id="contactName" placeholder="Full Name*" required>
+        <input type="email" id="contactEmail" placeholder="Email*" required>
+        <input type="text" id="contactPhone" placeholder="Phone">
+        <textarea id="contactMessage" placeholder="Message"></textarea>
+        <button type="submit">SEND</button>
+      </form>
+    </div>
+  </div>
+  <!-- GSAP and scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+  <script src="script2.js"></script>
+  <script>
+    function sendToWhatsApp(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('contactName').value;
+      const email = document.getElementById('contactEmail').value;
+      const phone = document.getElementById('contactPhone').value;
+      const message = document.getElementById('contactMessage').value;
+
+      const waMessage = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`;
+      const encodedMessage = encodeURIComponent(waMessage);
+
+      const waUrl = `https://wa.me/201223610715?text=${encodedMessage}`;
+      window.open(waUrl, '_blank'); // Open WhatsApp in a new tab
+
+      showContactToast('Message sent successfully!');
+      document.getElementById('contactForm').reset(); // Clear the form after sending
+    }
+
+    function showContactToast(msg) {
+      let oldToast = document.getElementById('contact-toast-msg');
+      if (oldToast) oldToast.remove();
+
+      let toast = document.createElement('div');
+      toast.id = 'contact-toast-msg';
+      toast.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 8px;"></i>' + msg;
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+      toast.style.background = '#ffb6c1';
+      toast.style.color = '#1a1a1a'; // Darker text on pink looks great
+      toast.style.padding = '12px 25px';
+      toast.style.borderRadius = '50px';
+      toast.style.boxShadow = '0 5px 15px rgba(255, 182, 193, 0.4)';
+      toast.style.zIndex = '9999';
+      toast.style.fontSize = '15px';
+      toast.style.fontWeight = 'bold';
+      toast.style.opacity = '0';
+      toast.style.transition = 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+
+      document.body.appendChild(toast);
+
+      // Enter animation
+      setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+      }, 10);
+
+      // Exit animation
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000); // Popup stays for 3 seconds
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout</title>
+  <link rel="stylesheet" href="mwsstyle.css" />
+  <link rel="icon" type="image/png" href="notebooks photos/favicon_logo_y_1773081448158.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+</head>
+
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">YIMYIM</a>
+      <div class="sidebar-wrapper" id="sidebarWrapper">
+        <div class="close-sidebar" id="closeBtnSidebar"><i class="fas fa-times"></i></div>
+        <div class="nav-links">
+          <a href="index.html#home">Home</a>
+          <a href="shop.html">Shop</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#works">Works</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="icons" style="position: relative;">
+          <i class="fas fa-search" id="searchBtn" style="cursor: pointer;"></i>
+          <div id="searchPopup" class="search-popup">
+            <input type="text" id="searchInput" placeholder="ابحث هنا...">
+            <button onclick="performSearch()">بحث</button>
+          </div>
+          <i class="fas fa-heart" id="favoriteBtn" style="cursor: pointer;"></i>
+          <i class="fas fa-user" id="userBtn" style="cursor: pointer;"></i>
+          <i class="fas fa-shopping-cart" id="cartBtn" style="cursor: pointer;"></i>
+        </div>
+      </div>
+
+      <div class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+
+
+  <header>
+    <h2>CHECKOUT</h2>
+  </header>
+  <div class="container">
+    <div class="delivery">
+      <h2>DELIVERY OPTIONS</h2>
+      <form>
+        <input type="text" placeholder="First Name" required />
+        <input type="text" placeholder="Last Name" required />
+        <input type="text" placeholder="Start typing the first line of your address" />
+        <input type="email" placeholder="Email" required />
+        <input type="tel" placeholder="Phone Number" required />
+        <button type="submit" class="save-btn">SAVE & CONTINUE</button>
+      </form>
+    </div>
+    <div class="bag-summary">
+      <h3>IN YOUR BAG <span id="checkout-item-count" style="font-size: 14px; color: #888; margin-left: auto;"></span>
+      </h3>
+      <div class="summary" id="checkout-summary">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="product-info">
+        <p class="delivery-date" id="delivery-date-text"></p>
+        <div class="checkout-products-grid" id="checkout-products-grid">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+  <script src="script2.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cartStr = localStorage.getItem('yim_cart');
+      const cartArr = cartStr ? JSON.parse(cartStr) : [];
+
+      const summaryContainer = document.getElementById('checkout-summary');
+      const gridContainer = document.getElementById('checkout-products-grid');
+      const countSpan = document.getElementById('checkout-item-count');
+      const dateText = document.getElementById('delivery-date-text');
+
+      if (cartArr.length === 0) {
+        summaryContainer.innerHTML = '<p style="text-align:center; padding: 20px;">Your bag is empty.</p>';
+        gridContainer.innerHTML = '';
+        return;
+      }
+
+      // Setup delivery date (e.g., 3 days from now)
+      const date = new Date();
+      date.setDate(date.getDate() + 3);
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
+      dateText.innerText = 'ARRIVES BY ' + date.toLocaleDateString('en-US', options).toUpperCase();
+
+      let totalItems = 0;
+      let subtotal = 0;
+      const shipping = 85.00; // Matching the cart shipping cost
+
+      let summaryHTML = '';
+      let gridHTML = '';
+
+      cartArr.forEach(product => {
+        totalItems += product.qty;
+        const itemTotal = product.price * product.qty;
+        subtotal += itemTotal;
+
+        summaryHTML += `<p>${product.title} (x${product.qty}) <span>${itemTotal.toFixed(2)} EGP</span></p>`;
+
+        gridHTML += `
+            <div class="checkout-product-item">
+              <img src="${product.img}" alt="${product.title}" />
+              <p class="title" style="font-size: 12px; max-width: 80px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${product.title}</p>
+              <p style="font-size: 12px; color: #555;">${product.qty}x ${product.price.toFixed(2)} EGP</p>
+            </div>
+          `;
+      });
+
+      summaryHTML += `
+          <hr style="margin: 15px 0;">
+          <p>Subtotal <span>${subtotal.toFixed(2)} EGP</span></p>
+          <p>Estimated shipping <span>${shipping.toFixed(2)} EGP</span></p>
+          <hr style="margin: 15px 0;">
+          <p class="total">TOTAL <span>${(subtotal + shipping).toFixed(2)} EGP</span></p>
+        `;
+
+      summaryContainer.innerHTML = summaryHTML;
+      gridContainer.innerHTML = gridHTML;
+      countSpan.innerText = `(${totalItems} items)`;
+
+      // Form submission popup simulation
+      document.querySelector('.delivery form').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Save order to localStorage
+        let orders = JSON.parse(localStorage.getItem('yim_orders')) || [];
+        const orderId = '#YIM-' + Math.floor(1000 + Math.random() * 9000);
+        const orderDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+        let thumbnail = cartArr.length > 0 ? cartArr[0].img : '';
+        let itemNames = cartArr.length > 0 ? `${cartArr[0].qty}x ${cartArr[0].title}` + (cartArr.length > 1 ? ` & ${cartArr.length - 1} more` : '') : '';
+
+        orders.push({
+          id: orderId,
+          date: orderDate,
+          img: thumbnail,
+          items: itemNames,
+          total: (subtotal + shipping).toFixed(2),
+          status: 'Processing'
+        });
+
+        localStorage.setItem('yim_orders', JSON.stringify(orders));
+
+        alert('Order placed successfully!');
+        localStorage.removeItem('yim_cart'); // Clear cart after order
+        window.location.href = 'dashboard.html'; // Redirect to dashboard
+      });
+    });
+  </script>
+</body>
+
+</html>
+
+<style>
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+
+
+  }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background: #f9f6f1;
+    color: #000;
+  }
+
+  body header {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    margin-right: 50px;
+    font-size: xx-large;
+    font-weight: bold;
+    color: #FFB6C1;
+    margin-top: 110px;
+  }
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+
+
+  .delivery {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: white;
+    border-radius: 6px;
+    border: 2px solid black;
+    box-shadow: 0 4px 20px #FFB6C1;
+
+    width: 60%;
+  }
+
+  .delivery h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    margin-top: 20px;
+  }
+
+  .bag-summary {
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    background: white;
+    padding: 20px;
+    border-radius: 6px;
+    border: 2px solid black;
+    box-shadow: 0 4px 20px #FFB6C1;
+
+  }
+
+
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="tel"] {
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 15px;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 4px;
+  }
+
+
+  .save-btn {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    margin-left: 40%;
+    background: #FFB6C1;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .bag-summary h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .summary p {
+    display: flex;
+    justify-content: space-between;
+    margin: 6px 0;
+  }
+
+  .summary .total {
+    font-weight: bold;
+    color: red;
+  }
+
+  .product-info {
+    margin-top: 20px;
+  }
+
+  .checkout-products-grid {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .checkout-product-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .checkout-product-item img {
+    width: 80px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .checkout-product-item p {
+    margin: 5px 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .delivery-date {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  /* Tablet Responsive (IPad, Surface Pro, etc) */
+  @media (max-width: 1024px) {
+    .container {
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      padding: 20px;
+    }
+
+    .delivery {
+      width: 90%;
+    }
+
+    .bag-summary {
+      width: 90%;
+      margin-top: 0;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="tel"] {
+      width: 80%;
+      margin-left: 10%;
+    }
+
+    .save-btn {
+      width: max-content;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    body header {
+      margin-top: 130px;
+      font-size: 28px;
+    }
+
+    .delivery h2 {
+      font-size: 20px;
+      font-weight: bolder;
+      margin-top: 20px;
+    }
+
+    .delivery,
+    .bag-summary {
+      width: 100%;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="tel"] {
+      width: 90%;
+      margin-left: 5%;
+    }
+
+    .save-btn {
+      width: 80%;
+      margin-left: 10%;
+    }
+
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .checkout-products-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    .checkout-product-item img {
+      width: 100%;
+      max-width: 100px;
+    }
+  }
+</style>
