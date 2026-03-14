@@ -80,18 +80,24 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
   <script src="script2.js"></script>
+  <script src="api.js"></script>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const cartStr = localStorage.getItem('yim_cart');
-      const cartArr = cartStr ? JSON.parse(cartStr) : [];
-
+    document.addEventListener('DOMContentLoaded', async () => {
       const summaryContainer = document.getElementById('checkout-summary');
       const gridContainer = document.getElementById('checkout-products-grid');
       const countSpan = document.getElementById('checkout-item-count');
       const dateText = document.getElementById('delivery-date-text');
 
-      if (cartArr.length === 0) {
+      // Load checkout summary from PHP backend
+      const data = await api.getCheckoutSummary();
+      if (data.error) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const items = data.items || [];
+      if (items.length === 0) {
         summaryContainer.innerHTML = '<p style="text-align:center; padding: 20px;">Your bag is empty.</p>';
         gridContainer.innerHTML = '';
         return;
@@ -104,66 +110,54 @@
       dateText.innerText = 'ARRIVES BY ' + date.toLocaleDateString('en-US', options).toUpperCase();
 
       let totalItems = 0;
-      let subtotal = 0;
-      const shipping = 85.00; // Matching the cart shipping cost
-
       let summaryHTML = '';
       let gridHTML = '';
 
-      cartArr.forEach(product => {
-        totalItems += product.qty;
-        const itemTotal = product.price * product.qty;
-        subtotal += itemTotal;
+      items.forEach(item => {
+        totalItems += item.quantity;
+        const itemTotal = item.price * item.quantity;
 
-        summaryHTML += `<p>${product.title} (x${product.qty}) <span>${itemTotal.toFixed(2)} EGP</span></p>`;
+        summaryHTML += `<p>${item.name} (x${item.quantity}) <span>${itemTotal.toFixed(2)} EGP</span></p>`;
 
         gridHTML += `
             <div class="checkout-product-item">
-              <img src="${product.img}" alt="${product.title}" />
-              <p class="title" style="font-size: 12px; max-width: 80px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${product.title}</p>
-              <p style="font-size: 12px; color: #555;">${product.qty}x ${product.price.toFixed(2)} EGP</p>
+              <img src="${item.image_path}" alt="${item.name}" />
+              <p class="title" style="font-size: 12px; max-width: 80px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${item.name}</p>
+              <p style="font-size: 12px; color: #555;">${item.quantity}x ${item.price.toFixed(2)} EGP</p>
             </div>
           `;
       });
 
       summaryHTML += `
           <hr style="margin: 15px 0;">
-          <p>Subtotal <span>${subtotal.toFixed(2)} EGP</span></p>
-          <p>Estimated shipping <span>${shipping.toFixed(2)} EGP</span></p>
+          <p>Subtotal <span>${data.subtotal.toFixed(2)} EGP</span></p>
+          <p>Estimated shipping <span>${data.shipping.toFixed(2)} EGP</span></p>
+          ${data.discount > 0 ? `<p>Discount <span>-${data.discount.toFixed(2)} EGP</span></p>` : ''}
           <hr style="margin: 15px 0;">
-          <p class="total">TOTAL <span>${(subtotal + shipping).toFixed(2)} EGP</span></p>
+          <p class="total">TOTAL <span>${data.total.toFixed(2)} EGP</span></p>
         `;
 
       summaryContainer.innerHTML = summaryHTML;
       gridContainer.innerHTML = gridHTML;
       countSpan.innerText = `(${totalItems} items)`;
 
-      // Form submission popup simulation
-      document.querySelector('.delivery form').addEventListener('submit', (e) => {
+      // Form submission → PHP backend
+      document.querySelector('.delivery form').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const inputs = e.target.querySelectorAll('input');
+        const firstname = inputs[0].value;
+        const lastname = inputs[1].value;
+        const address = inputs[2].value;
+        const email = inputs[3].value;
+        const phone = inputs[4].value;
 
-        // Save order to localStorage
-        let orders = JSON.parse(localStorage.getItem('yim_orders')) || [];
-        const orderId = '#YIM-' + Math.floor(1000 + Math.random() * 9000);
-        const orderDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-        let thumbnail = cartArr.length > 0 ? cartArr[0].img : '';
-        let itemNames = cartArr.length > 0 ? `${cartArr[0].qty}x ${cartArr[0].title}` + (cartArr.length > 1 ? ` & ${cartArr.length - 1} more` : '') : '';
-
-        orders.push({
-          id: orderId,
-          date: orderDate,
-          img: thumbnail,
-          items: itemNames,
-          total: (subtotal + shipping).toFixed(2),
-          status: 'Processing'
-        });
-
-        localStorage.setItem('yim_orders', JSON.stringify(orders));
-
-        alert('Order placed successfully!');
-        localStorage.removeItem('yim_cart'); // Clear cart after order
-        window.location.href = 'dashboard.html'; // Redirect to dashboard
+        const res = await api.submitCheckout(firstname, lastname, address, email, phone);
+        if (res.success) {
+          alert('Order placed successfully!');
+          window.location.href = 'dashboard.html';
+        } else {
+          alert(res.message || 'Checkout failed');
+        }
       });
     });
   </script>

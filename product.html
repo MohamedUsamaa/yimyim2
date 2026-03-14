@@ -585,11 +585,11 @@
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 15px; flex: 1; min-width: 200px;">
-                    <a href="cart.html" class="btn btn-add" style="flex: none; width: 100%;"><i
+                    <a href="#" class="btn btn-add" id="addToCartBtn" style="flex: none; width: 100%;"><i
                             class="fas fa-shopping-cart"
                             style="color: #FFB6C1; margin-right: 8px; font-size: 1.2em; vertical-align: middle;"></i>
                         Add to Cart</a>
-                    <a href="checkout.html" class="btn btn-buy" style="width: 100%;"><i class="fas fa-bolt"></i> Buy
+                    <a href="#" class="btn btn-buy" id="buyNowBtn" style="width: 100%;"><i class="fas fa-bolt"></i> Buy
                         Now</a>
                 </div>
             </div>
@@ -615,6 +615,7 @@
         </div>
     </div>
 
+    <script src="api.js"></script>
     <script>
         // Quantity Logic
         const qtyInput = document.getElementById('qtyInput');
@@ -625,16 +626,57 @@
             qtyInput.value++;
         });
 
+        let currentProductId = null;
+
         // Setup dynamic content based on URL query params
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
             const title = params.get('title');
             const price = params.get('price');
             const img = params.get('img');
+            const id = params.get('id');
 
             if (title) document.getElementById('productTitle').textContent = decodeURIComponent(title);
             if (price) document.getElementById('productPrice').textContent = decodeURIComponent(price);
             if (img) document.getElementById('productImage').src = decodeURIComponent(img);
+
+            // Resolve product ID: use URL param or look up by title
+            if (id) {
+                currentProductId = parseInt(id);
+            } else if (title) {
+                const products = await api.getProducts();
+                const match = products.find(p => p.name.toLowerCase() === decodeURIComponent(title).toLowerCase());
+                if (match) currentProductId = match.id;
+            }
+        });
+
+        document.getElementById('addToCartBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (!currentProductId) { alert('Product not found'); return; }
+            const qty = parseInt(qtyInput.value) || 1;
+            const res = await api.addToCart(currentProductId, qty);
+            if (res.success) {
+                alert('Item added to cart!');
+                window.location.href = 'cart.html';
+            } else if (res.error === 'Login required') {
+                window.location.href = 'login.html';
+            } else {
+                alert(res.message || 'Failed to add to cart');
+            }
+        });
+
+        document.getElementById('buyNowBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (!currentProductId) { alert('Product not found'); return; }
+            const qty = parseInt(qtyInput.value) || 1;
+            const res = await api.addToCart(currentProductId, qty);
+            if (res.success) {
+                window.location.href = 'checkout.html';
+            } else if (res.error === 'Login required') {
+                window.location.href = 'login.html';
+            } else {
+                alert(res.message || 'Failed');
+            }
         });
     </script>
     <script src="script2.js"></script>

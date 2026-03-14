@@ -54,86 +54,86 @@
         <h2>OUR PRODUCTS</h2>
     </div>
     <div class="container">
-        <div class="product">
+        <div class="product" data-product-id="1">
             <img src="notebooks photos/BEYOND STARS.png" alt="logo">
             <h3>BEYOND STARS</h3>
             <h4> EGP 60</h4>
             <input type="number" value="1" min="1">
-            <a href="checkout.html" title="ORDER">BUY NOW</a>
-            <a href="cart.html">ADD TO CART</a>
+            <a href="#" class="buy-now-btn" title="ORDER">BUY NOW</a>
+            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
 
         </div>
-        <div class="product">
+        <div class="product" data-product-id="2">
             <img src="notebooks photos/Create.png" alt="">
             <h3>Create</h3>
             <h4> EGP 60</h4>
             <input type="number" value="1" min="1">
-            <a href="checkout.html" title="ORDER">BUY NOW</a>
-            <a href="cart.html">ADD TO CART</a>
+            <a href="#" class="buy-now-btn" title="ORDER">BUY NOW</a>
+            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
         </div>
-        <div class="product">
+        <div class="product" data-product-id="3">
             <img src="notebooks photos/Daily Diary.png" alt="">
             <h3>Daily Diary</h3>
             <h4> EGP 60</h4>
             <input type="number" value="1" min="1">
-            <a href="checkout.html" title="ORDER">BUY NOW</a>
-            <a href="cart.html">ADD TO CART</a>
+            <a href="#" class="buy-now-btn" title="ORDER">BUY NOW</a>
+            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
         </div>
-        <div class="product">
+        <div class="product" data-product-id="4">
             <img src="notebooks photos/JUST FOCUS.png" alt="">
             <h3>JUST FOCUS</h3>
             <h4> EGP 60</h4>
             <input type="number" value="1" min="1">
-            <a href="checkout.html" title="ORDER">BUY NOW</a>
-            <a href="cart.html">ADD TO CART</a>
+            <a href="#" class="buy-now-btn" title="ORDER">BUY NOW</a>
+            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
         </div>
-        <div class="product">
+        <div class="product" data-product-id="5">
             <img src="notebooks photos/MY THOUGHTS.png" alt="">
             <h3>MY THOUGHTS</h3>
             <h4> EGP 60</h4>
             <input type="number" value="1" min="1">
-            <a href="checkout.html" title="ORDER">BUY NOW</a>
-            <a href="cart.html">ADD TO CART</a>
+            <a href="#" class="buy-now-btn" title="ORDER">BUY NOW</a>
+            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
         </div>
-        <div class="product">
+        <div class="product" data-product-id="6">
             <img src="notebooks photos/Pretty Little Notes.png" alt="">
             <h3>Pretty Little Notes </h3>
             <h4> EGP 60</h4>
             <input type="number" value="1" min="1">
-            <a href="checkout.html" title="ORDER">BUY NOW</a>
-            <a href="cart.html">ADD TO CART</a>
+            <a href="#" class="buy-now-btn" title="ORDER">BUY NOW</a>
+            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
         </div>
-        <div class="product">
+        <div class="product" data-product-id="7">
             <img src="notebooks photos/THOUGHTS OR WAVES.png" alt="">
             <h3>THOUGHTS OR WAVES</h3>
             <h4> EGP 60</h4>
             <input type="number" value="1" min="1">
-            <a href="checkout.html" title="ORDER">BUY NOW</a>
-            <a href="cart.html">ADD TO CART</a>
+            <a href="#" class="buy-now-btn" title="ORDER">BUY NOW</a>
+            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
         </div>
-        <div class="product">
+        <div class="product" data-product-id="8">
             <img src="notebooks photos/Visça Barca.png" alt="">
             <h3>Visça Barca</h3>
             <h4> EGP 60</h4>
             <input type="number" value="1" min="1">
-            <a href="checkout.html" title="ORDER">BUY NOW</a>
-            <a href="cart.html">ADD TO CART</a>
+            <a href="#" class="buy-now-btn" title="ORDER">BUY NOW</a>
+            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
         </div>
-        <div class="product">
+        <div class="product" data-product-id="9">
             <img src="notebooks photos/Where ideas begin.png" alt="">
             <h3>Where ideas begin</h3>
             <h4> EGP 60</h4>
             <input type="number" value="1" min="1">
-            <a href="checkout.html" title="ORDER">BUY NOW</a>
-            <a href="cart.html">ADD TO CART</a>
+            <a href="#" class="buy-now-btn" title="ORDER">BUY NOW</a>
+            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
         </div>
-        <div class="product">
+        <div class="product" data-product-id="10">
             <img src="notebooks photos/Dreamy Wings.png" alt="">
             <h3>Dreamy Wings</h3>
             <h4> EGP 60</h4>
             <input type="number" value="1" min="1">
-            <a href="checkout.html" title="ORDER">BUY NOW</a>
-            <a href="cart.html">ADD TO CART</a>
+            <a href="#" class="buy-now-btn" title="ORDER">BUY NOW</a>
+            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
         </div>
 
     </div>
@@ -148,6 +148,47 @@
             color: #FFB6C1;
         }
     </style>
+
+    <script src="api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const product = btn.closest('.product');
+                    const productId = product.dataset.productId;
+                    const qty = parseInt(product.querySelector('input[type="number"]').value) || 1;
+                    const res = await api.addToCart(parseInt(productId), qty);
+                    if (res.success) {
+                        alert('Item added to cart!');
+                    } else if (res.error === 'Login required') {
+                        window.location.href = 'login.html';
+                    } else {
+                        alert(res.message || 'Failed to add to cart');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.buy-now-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const product = btn.closest('.product');
+                    const productId = product.dataset.productId;
+                    const qty = parseInt(product.querySelector('input[type="number"]').value) || 1;
+                    const res = await api.addToCart(parseInt(productId), qty);
+                    if (res.success) {
+                        window.location.href = 'checkout.html';
+                    } else if (res.error === 'Login required') {
+                        window.location.href = 'login.html';
+                    } else {
+                        alert(res.message || 'Failed');
+                    }
+                });
+            });
+        });
+    </script>
 
     <!-- GSAP and scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>

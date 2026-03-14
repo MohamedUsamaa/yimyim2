@@ -267,7 +267,7 @@
                     <div class="swiper-wrapper">
                         <!-- كل منتج جوه slide -->
                         <div class="swiper-slide">
-                            <div class="pro">
+                            <div class="pro" data-product-id="1">
                                 <img src="notebooks photos/BEYOND STARS.png" alt="">
                                 <h3>BEYOND STARS</h3>
                                 <div class="star">
@@ -286,7 +286,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="pro">
+                            <div class="pro" data-product-id="2">
                                 <img src="notebooks photos/Create.png" alt="">
                                 <h3>Create</h3>
                                 <div class="star">
@@ -305,7 +305,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="pro">
+                            <div class="pro" data-product-id="3">
                                 <img src="notebooks photos/Daily Diary.png" alt="">
                                 <h3>Daily Diary</h3>
                                 <div class="star">
@@ -324,7 +324,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="pro">
+                            <div class="pro" data-product-id="10">
                                 <img src="notebooks photos/Dreamy Wings.png" alt="">
                                 <h3>Dreamy Wings</h3>
                                 <div class="star">
@@ -343,7 +343,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="pro">
+                            <div class="pro" data-product-id="4">
                                 <img src="notebooks photos/JUST FOCUS.png" alt="">
                                 <h3>JUST FOCUS</h3>
                                 <div class="star">
@@ -362,7 +362,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="pro">
+                            <div class="pro" data-product-id="5">
                                 <img src="notebooks photos/MY THOUGHTS.png" alt="">
                                 <h3>MY THOUGHTS</h3>
                                 <div class="star">
@@ -381,7 +381,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="pro">
+                            <div class="pro" data-product-id="6">
                                 <img src="notebooks photos/Pretty Little Notes.png" alt="">
                                 <h3>Pretty Little Notes</h3>
                                 <div class="star">
@@ -400,7 +400,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="pro">
+                            <div class="pro" data-product-id="7">
                                 <img src="notebooks photos/THOUGHTS OR WAVES.png" alt="">
                                 <h3>Thoughts or Waves</h3>
                                 <div class="star">
@@ -419,7 +419,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="pro">
+                            <div class="pro" data-product-id="8">
                                 <img src="notebooks photos/Visça Barca.png" alt="">
                                 <h3>Visça Barca</h3>
                                 <div class="star">
@@ -438,7 +438,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="pro">
+                            <div class="pro" data-product-id="9">
                                 <img src="notebooks photos/Where ideas begin.png" alt="">
                                 <h3>Where ideas begin</h3>
                                 <div class="star">
@@ -537,7 +537,35 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="script.js"></script>
+    <script src="api.js"></script>
     <script src="script2.js"></script>
+
+    <script>
+        // Wire up add-to-cart buttons on index page
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pro .cart, .pro .buy').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const pro = btn.closest('.pro');
+                    const productId = pro?.dataset?.productId;
+                    if (!productId) return;
+                    const res = await api.addToCart(parseInt(productId), 1);
+                    if (res.success) {
+                        if (btn.classList.contains('buy')) {
+                            window.location.href = 'checkout.html';
+                        } else {
+                            alert('Item added to cart!');
+                        }
+                    } else if (res.error === 'Login required') {
+                        window.location.href = 'login.html';
+                    } else {
+                        alert(res.message || 'Failed to add to cart');
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 

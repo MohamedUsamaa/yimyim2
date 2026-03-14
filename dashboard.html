@@ -940,61 +940,66 @@
         </main>
     </div>
 
+    <script src="api.js"></script>
     <script>
-        // Check if user is logged in (Simulation)
-        document.addEventListener("DOMContentLoaded", () => {
-            const isLoggedIn = localStorage.getItem("isLoggedIn");
-            if (isLoggedIn !== "true") {
-                // window.location.href = "login.html";
-            } else {
-                const userName = localStorage.getItem("userName");
-                const userEmail = localStorage.getItem("userEmail");
-
-                if (userName) {
-                    document.getElementById('displayUserName').textContent = userName;
-                    if (document.getElementById('overviewName1')) document.getElementById('overviewName1').textContent = userName;
-                    if (document.getElementById('overviewName2')) document.getElementById('overviewName2').textContent = userName;
-                    if (document.getElementById('fullName')) document.getElementById('fullName').value = userName;
-                }
-
-                if (userEmail) {
-                    document.getElementById('displayUserEmail').textContent = userEmail;
-                    if (document.getElementById('overviewEmail1')) document.getElementById('overviewEmail1').textContent = userEmail;
-                    if (document.getElementById('email')) document.getElementById('email').value = userEmail;
-                }
+        // Check if user is logged in via PHP session
+        document.addEventListener("DOMContentLoaded", async () => {
+            const session = await api.getSession();
+            if (!session.loggedIn) {
+                window.location.href = "login.html";
+                return;
             }
 
-            // Render Orders
+            const userName = session.user.name;
+            const userEmail = session.user.email;
+
+            if (userName) {
+                document.getElementById('displayUserName').textContent = userName;
+                if (document.getElementById('overviewName1')) document.getElementById('overviewName1').textContent = userName;
+                if (document.getElementById('overviewName2')) document.getElementById('overviewName2').textContent = userName;
+                if (document.getElementById('fullName')) document.getElementById('fullName').value = userName;
+            }
+
+            if (userEmail) {
+                document.getElementById('displayUserEmail').textContent = userEmail;
+                if (document.getElementById('overviewEmail1')) document.getElementById('overviewEmail1').textContent = userEmail;
+                if (document.getElementById('email')) document.getElementById('email').value = userEmail;
+            }
+
+            // Render Orders from PHP backend
             renderOrders();
         });
 
-        function renderOrders() {
-            const ordersStr = localStorage.getItem('yim_orders');
-            const orders = ordersStr ? JSON.parse(ordersStr) : [];
+        async function renderOrders() {
+            const orders = await api.getOrders();
             const tbody = document.getElementById('orders-tbody');
 
-            if (orders.length === 0) {
+            if (!orders || orders.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px;">No recent orders.</td></tr>';
                 return;
             }
 
-            // Reverse to show newest first
-            const sortedOrders = [...orders].reverse();
             let html = '';
-
-            sortedOrders.forEach(order => {
+            orders.forEach(order => {
                 const statusClass = order.status.toLowerCase() === 'delivered' ? 'delivered' : 'processing';
+                const orderDate = new Date(order.order_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const firstItem = order.items && order.items.length > 0 ? order.items[0] : null;
+                const itemSummary = firstItem
+                    ? `${firstItem.quantity}x ${firstItem.name}` + (order.items.length > 1 ? ` & ${order.items.length - 1} more` : '')
+                    : 'No items';
+                const thumbnail = firstItem ? firstItem.image_path : '';
+
                 html += `
                     <tr>
-                        <td data-label="Order ID">${order.id}</td>
-                        <td data-label="Date">${order.date}</td>
+                        <td data-label="Order ID">#YIM-${order.id}</td>
+                        <td data-label="Date">${orderDate}</td>
                         <td data-label="Items">
                             <div class="order-item-info">
-                                ${order.img ? `<img src="${order.img}" alt="Product" class="order-item-img">` : ''}
-                                <span>${order.items}</span>
+                                ${thumbnail ? `<img src="${thumbnail}" alt="Product" class="order-item-img">` : ''}
+                                <span>${itemSummary}</span>
                             </div>
                         </td>
-                        <td data-label="Total">${order.total} EGP</td>
+                        <td data-label="Total">${parseFloat(order.total_amount).toFixed(2)} EGP</td>
                         <td data-label="Status"><span class="status ${statusClass}">${order.status}</span></td>
                         <td data-label="Action"><a href="#" class="btn-action">Details</a></td>
                     </tr>
@@ -1005,46 +1010,44 @@
 
         // Tab Switching Logic
         function switchTab(tabId, element) {
-            // Remove active class from all links
             document.querySelectorAll('.sidebar-menu a').forEach(link => {
                 link.classList.remove('active');
             });
-            // Add active class to clicked link
             element.classList.add('active');
-
-            // Hide all sections
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
-
-            // Show targeted section
             document.getElementById(tabId).classList.add('active');
         }
 
-        // Save Profile Simulation
-        function saveProfile(event) {
+        // Save Profile via PHP backend
+        async function saveProfile(event) {
             event.preventDefault();
             const newName = document.getElementById('fullName').value;
             const newEmail = document.getElementById('email').value;
 
-            // Update UI
-            document.getElementById('displayUserName').textContent = newName;
-            document.getElementById('displayUserEmail').textContent = newEmail;
-            if (document.getElementById('overviewName1')) document.getElementById('overviewName1').textContent = newName;
-            if (document.getElementById('overviewName2')) document.getElementById('overviewName2').textContent = newName;
-            if (document.getElementById('overviewEmail1')) document.getElementById('overviewEmail1').textContent = newEmail;
-
-            // Update localStorage
-            localStorage.setItem('userName', newName);
-            localStorage.setItem('userEmail', newEmail);
-
-            alert("Profile updated successfully!");
+            const res = await api.updateProfile(newName, newEmail);
+            if (res.success) {
+                document.getElementById('displayUserName').textContent = newName;
+                document.getElementById('displayUserEmail').textContent = newEmail;
+                if (document.getElementById('overviewName1')) document.getElementById('overviewName1').textContent = newName;
+                if (document.getElementById('overviewName2')) document.getElementById('overviewName2').textContent = newName;
+                if (document.getElementById('overviewEmail1')) document.getElementById('overviewEmail1').textContent = newEmail;
+                localStorage.setItem('userName', newName);
+                localStorage.setItem('userEmail', newEmail);
+                alert("Profile updated successfully!");
+            } else {
+                alert(res.message || "Failed to update profile");
+            }
         }
 
-        // Logout Logic
-        function logoutUser() {
+        // Logout via PHP backend
+        async function logoutUser() {
             if (confirm("Are you sure you want to log out?")) {
+                await api.logout();
                 localStorage.removeItem("isLoggedIn");
+                localStorage.removeItem("userName");
+                localStorage.removeItem("userEmail");
                 window.location.href = "index.html";
             }
         }

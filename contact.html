@@ -323,8 +323,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
   <script src="script2.js"></script>
+  <script src="api.js"></script>
   <script>
-    function sendToWhatsApp(e) {
+    async function sendToWhatsApp(e) {
       e.preventDefault();
 
       const name = document.getElementById('contactName').value;
@@ -332,14 +333,17 @@
       const phone = document.getElementById('contactPhone').value;
       const message = document.getElementById('contactMessage').value;
 
+      // Send to PHP backend (email)
+      api.sendContact(name, email, phone, message);
+
+      // Also open WhatsApp
       const waMessage = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`;
       const encodedMessage = encodeURIComponent(waMessage);
-
       const waUrl = `https://wa.me/201223610715?text=${encodedMessage}`;
-      window.open(waUrl, '_blank'); // Open WhatsApp in a new tab
+      window.open(waUrl, '_blank');
 
       showContactToast('Message sent successfully!');
-      document.getElementById('contactForm').reset(); // Clear the form after sending
+      document.getElementById('contactForm').reset();
     }
 
     function showContactToast(msg) {

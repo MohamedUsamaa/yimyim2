@@ -375,8 +375,9 @@
         </select>
 
         <p>PROMO CODE</p>
-        <input type="text" placeholder="Enter your code">
-        <button>APPLY</button>
+        <input type="text" id="promo-input" placeholder="Enter your code">
+        <button onclick="applyPromo()">APPLY</button>
+        <p id="promo-msg" style="color:green; font-size:12px;"></p>
 
         <p style="margin-top: 20px;">TOTAL COST <span style="float:right">EGP<span id="total-cost">1000.00</span></span>
         </p>
@@ -384,21 +385,27 @@
     </div>
   </div>
 
+  <script src="api.js"></script>
   <script>
-    let products = [];
+    let cartItems = [];
 
-    function loadCart() {
-      let cartStr = localStorage.getItem('yim_cart');
-      products = cartStr ? JSON.parse(cartStr) : [];
-      renderCart();
+    async function loadCart() {
+      const res = await api.getCart();
+      if (res.error) {
+        // Not logged in — redirect to login
+        window.location.href = 'login.html';
+        return;
+      }
+      cartItems = res.items || [];
+      renderCart(res.total);
     }
 
-    function renderCart() {
+    function renderCart(serverTotal) {
       const tbody = document.getElementById('cart-body');
       tbody.innerHTML = '';
       let total = 0, items = 0;
 
-      if (products.length === 0) {
+      if (cartItems.length === 0) {
         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: gray; display:table-cell !important;">Your cart is empty.</td></tr>';
         document.getElementById('summary-items').innerText = '0';
         document.getElementById('summary-price').innerText = '0.00';
@@ -407,26 +414,26 @@
         return;
       }
 
-      products.forEach((product, index) => {
-        const itemTotal = product.price * product.qty;
+      cartItems.forEach((item) => {
+        const itemTotal = item.price * item.quantity;
         total += itemTotal;
-        items += product.qty;
+        items += item.quantity;
 
         tbody.innerHTML += `
           <tr>
             <td>
-              <img src="${product.img}" alt="">
+              <img src="${item.image_path}" alt="">
               <div class="product-info">
-                ${product.title}
-                <a href="#" style="display:block; margin-top:8px; font-weight:bold;" onclick="removeItem(${index}); return false;">Remove</a>
+                ${item.name}
+                <a href="#" style="display:block; margin-top:8px; font-weight:bold;" onclick="removeItem(${item.product_id}); return false;">Remove</a>
               </div>
             </td>
             <td class="qty">
-              <button onclick="changeQty(${index}, -1)">-</button>
-              <input type="text" value="${product.qty}" readonly>
-              <button onclick="changeQty(${index}, 1)">+</button>
+              <button onclick="changeQty(${item.product_id}, -1)">-</button>
+              <input type="text" value="${item.quantity}" readonly>
+              <button onclick="changeQty(${item.product_id}, 1)">+</button>
             </td>
-            <td>EGP ${product.price.toFixed(2)}</td>
+            <td>EGP ${item.price.toFixed(2)}</td>
             <td>EGP ${itemTotal.toFixed(2)}</td>
           </tr>
         `;
@@ -438,18 +445,32 @@
       document.getElementById('total-cost').innerText = (total + 85).toFixed(2);
     }
 
-    function changeQty(index, delta) {
-      if (products[index].qty + delta >= 1) {
-        products[index].qty += delta;
-        localStorage.setItem('yim_cart', JSON.stringify(products));
-        renderCart();
-      }
+    async function changeQty(productId, delta) {
+      await api.updateCartQty(productId, delta);
+      loadCart();
     }
 
-    function removeItem(index) {
-      products.splice(index, 1);
-      localStorage.setItem('yim_cart', JSON.stringify(products));
-      renderCart();
+    async function removeItem(productId) {
+      await api.removeFromCart(productId);
+      loadCart();
+    }
+
+    async function applyPromo() {
+      const code = document.getElementById('promo-input').value.trim();
+      if (!code) return;
+      const res = await api.applyPromo(code);
+      const msg = document.getElementById('promo-msg');
+      if (res.success) {
+        msg.style.color = 'green';
+        msg.innerText = res.message;
+        // Recalculate total with discount
+        const price = parseFloat(document.getElementById('summary-price').innerText);
+        const discounted = price - (price * res.discount / 100);
+        document.getElementById('total-cost').innerText = (discounted + 85).toFixed(2);
+      } else {
+        msg.style.color = 'red';
+        msg.innerText = res.message;
+      }
     }
 
     loadCart();
