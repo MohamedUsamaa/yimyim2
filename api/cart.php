@@ -21,6 +21,10 @@ if ($method === 'GET' && $action === '') {
 
     $total = 0;
     foreach ($items as &$item) {
+        $item['id'] = (int)$item['id'];
+        $item['product_id'] = (int)$item['product_id'];
+        $item['quantity'] = (int)$item['quantity'];
+        $item['price'] = (float)$item['price'];
         $item['subtotal'] = $item['price'] * $item['quantity'];
         $total += $item['subtotal'];
     }

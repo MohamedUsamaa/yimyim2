@@ -18,6 +18,11 @@ if ($method === 'GET') {
     $stmt->execute([$userId]);
     $orders = $stmt->fetchAll();
 
+    foreach ($orders as &$order) {
+        $order['id'] = (int)$order['id'];
+        $order['total_amount'] = (float)$order['total_amount'];
+    }
+
     // Get items for each order
     foreach ($orders as &$order) {
         $stmt = $db->prepare("

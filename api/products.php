@@ -14,12 +14,18 @@ if ($method === 'GET') {
         $stmt->execute([(int)$id]);
         $product = $stmt->fetch();
         if ($product) {
+            $product['id'] = (int)$product['id'];
+            $product['price'] = (float)$product['price'];
             jsonResponse($product);
         } else {
             jsonResponse(['error' => 'Product not found'], 404);
         }
     } else {
         $products = $db->query("SELECT * FROM products")->fetchAll();
+        foreach ($products as &$p) {
+            $p['id'] = (int)$p['id'];
+            $p['price'] = (float)$p['price'];
+        }
         jsonResponse($products);
     }
 }

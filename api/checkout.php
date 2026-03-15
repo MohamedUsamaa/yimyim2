@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/mailer.php';
 header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -36,7 +37,10 @@ if ($method === 'POST' && $action === 'submit') {
     }
 
     $subtotal = 0;
-    foreach ($cartItems as $item) {
+    foreach ($cartItems as &$item) {
+        $item['product_id'] = (int)$item['product_id'];
+        $item['quantity'] = (int)$item['quantity'];
+        $item['price'] = (float)$item['price'];
         $subtotal += $item['price'] * $item['quantity'];
     }
 
@@ -75,6 +79,13 @@ if ($method === 'POST' && $action === 'submit') {
     // Clear session promo
     unset($_SESSION['promo_code'], $_SESSION['promo_discount'], $_SESSION['promo_id'], $_SESSION['name_on_bottle']);
 
+    // Send order confirmation email
+    $customerName = $firstname . ' ' . $lastname;
+    sendOrderEmail($email, $customerName, $orderId, $cartItems, $subtotal, $shipping, $discount, $total);
+
+    // Also send a copy to the store owner
+    sendOrderEmail('celeste142025@gmail.com', 'YIMYIM Store', $orderId, $cartItems, $subtotal, $shipping, $discount, $total);
+
     jsonResponse([
         'success' => true,
         'order_id' => $orderId,
@@ -99,6 +110,9 @@ if ($method === 'GET' && $action === 'summary') {
 
     $subtotal = 0;
     foreach ($items as &$item) {
+        $item['product_id'] = (int)$item['product_id'];
+        $item['quantity'] = (int)$item['quantity'];
+        $item['price'] = (float)$item['price'];
         $item['subtotal'] = $item['price'] * $item['quantity'];
         $subtotal += $item['subtotal'];
     }
