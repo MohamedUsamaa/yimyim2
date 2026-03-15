@@ -24,7 +24,7 @@ if ($method === 'POST' && $action === 'submit') {
 
     // Get cart items
     $stmt = $db->prepare("
-        SELECT ci.product_id, ci.quantity, p.name, p.price
+        SELECT ci.product_id, ci.quantity, p.name, p.price, p.image_path
         FROM cart_items ci
         JOIN products p ON ci.product_id = p.id
         WHERE ci.user_id = ?
@@ -43,6 +43,7 @@ if ($method === 'POST' && $action === 'submit') {
         $item['price'] = (float)$item['price'];
         $subtotal += $item['price'] * $item['quantity'];
     }
+    unset($item);
 
     $shipping = 85.00;
     $nameFee = !empty($_SESSION['name_on_bottle']) ? 50.00 : 0;
